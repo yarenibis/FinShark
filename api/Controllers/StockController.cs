@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Stock;
+using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -13,23 +17,26 @@ namespace api.Controllers
     public class StockController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public StockController(ApplicationDbContext applicationDbContext)
+        private readonly IStockRepository _repository;
+        public StockController(ApplicationDbContext applicationDbContext, IStockRepository stockRepository)
         {
+            _repository = stockRepository;
             _context = applicationDbContext;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var stocks = _context.Stocks.ToList().Select(s => s.ToStockDto());
-            return Ok(stocks);
+            var stocks = await _repository.GetAllAsync();
+            var stockDto = stocks.Select(s => s.ToStockDto());
+            return Ok(stockDto);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var stock = _context.Stocks.Find(id);
+            var stock = await _repository.GetByIdAsync(id);
             if (stock == null)
             {
                 return NotFound();
@@ -37,7 +44,39 @@ namespace api.Controllers
             return Ok(stock.ToStockDto());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateStockRequest createStockRequest)
+        {
+            var stock = createStockRequest.ToStockFromCreateDto(); //Dto'yu alıp entity'e çevirir
+            await _repository.CreateAsync(stock);
+            return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto()); //keydedilen entity'i dto'ya çevirip istemciye yanıt döner
+        }
 
 
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequest updateStockRequest)
+        {
+            var stock = await _repository.UpdateAsync(id, updateStockRequest);
+            if (stock == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(stock.ToStockDto());
+        }
+
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var stock = await _repository.DeleteAsync(id);
+            if (stock == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }

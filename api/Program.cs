@@ -1,3 +1,5 @@
+using api.Interfaces;
+using api.Repository;
 using Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 // OpenAPI dökümanı
 builder.Services.AddOpenApi();
 

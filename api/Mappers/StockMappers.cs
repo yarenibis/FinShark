@@ -19,8 +19,23 @@ namespace api.Mappers
                 Purchase = stockModel.Purchase,
                 LastDiv = stockModel.LastDiv,
                 Industry = stockModel.Industry,
-                MarketCap= stockModel.MarketCap
+                MarketCap = stockModel.MarketCap
             };
         }
+
+        public static Stock ToStockFromCreateDto(this CreateStockRequest createStockRequest)
+        {
+            return new Stock
+            {
+                Symbol = createStockRequest.Symbol,
+                CompanyName = createStockRequest.CompanyName,
+                Purchase = createStockRequest.Purchase,
+                LastDiv = createStockRequest.LastDiv,
+                Industry = createStockRequest.Industry,
+                MarketCap = createStockRequest.MarketCap
+            };
+        }
+
+        
     }
 }
