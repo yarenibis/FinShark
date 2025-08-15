@@ -1,6 +1,7 @@
 using api.Interfaces;
 using api.Models;
 using api.Repository;
+using api.Service;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -61,6 +62,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 // OpenAPI dökümanı
 builder.Services.AddOpenApi();
 
