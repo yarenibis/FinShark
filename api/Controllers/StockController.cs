@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [Route("api/stock")]
+    [Route("api/[controller]")]
     [ApiController]
     public class StockController : ControllerBase
     {
@@ -50,6 +50,15 @@ namespace api.Controllers
             }
             return Ok(stock.ToStockDto());
         }
+
+
+        [HttpGet("test")]
+        [Authorize]  // Auth testi için
+        public IActionResult TestAuth()
+        {
+            return Ok("Authorized!");
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequest createStockRequest)
