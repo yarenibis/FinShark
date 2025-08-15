@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Comment;
+using api.Models;
 using Models;
 
 namespace api.Mappers
@@ -17,6 +18,7 @@ namespace api.Mappers
                 Content = comment.Content,
                 Title = comment.Title,
                 CreatedOn = comment.CreatedOn,
+                CreatedBy=comment.AppUser.UserName,
                 StockId = comment.StockId
             };
         }
