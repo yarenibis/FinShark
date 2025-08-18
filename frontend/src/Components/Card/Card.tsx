@@ -1,19 +1,24 @@
-import React from 'react'
+import React, { type JSX } from 'react'
+import "./Card.css"
+import type { CompanySearch } from '../../company';
 
-type Props = {}
+interface Props  {
+   id:string;
+   searchResult:CompanySearch;
 
-const Card = (props: Props) => {
+}
+
+const Card: React.FC<Props> = ({id,searchResult}: Props ): JSX.Element => {
   return (
     <div className='card'>
         <img 
-          src='https://www.smallbusinesswebdesigns.net.au/uploads/1/1/6/1/116115455/published/free-stock-images-australia.jpg?1643646387'
-          alt='image'
+          alt='company logo'
         />
         <div className='deatils'>
-            <h2>Camera</h2>
-            <p>$200</p>
+            <h2>{searchResult.name} ({searchResult.symbol})</h2>
+            <p>${searchResult.currency}</p>
         </div>
-        <p className='info'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa, iure.</p>
+        <p className='info'> {searchResult.exchangeShortName} - {searchResult.stockExchange}</p>
     </div>
   )
 }
