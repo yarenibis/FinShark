@@ -1,6 +1,6 @@
 // api/search.ts
 import axios, { isAxiosError } from "axios";
-import type { CompanyProfile, CompanySearch } from "./company";
+import type { CompanyKeyMetrics, CompanyProfile, CompanySearch } from "./company";
 
 // Bu fonksiyon "CompanySearch[]" döndürsün ya da hata mesajı string döndürsün:
 export const searchCompanies = async (
@@ -32,6 +32,20 @@ export const getCompanyProfile = async (query: string) => {
       `https://financialmodelingprep.com/api/v3/profile/${encodeURIComponent(
     query
   )}?apikey=${import.meta.env.VITE_FMP_API_KEY}`
+    );
+    return data;
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+  }
+};
+
+
+export const getKeyMetrics = async (query: string) => {
+  try {
+    const data = await axios.get<CompanyKeyMetrics[]>(
+      `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${encodeURIComponent(
+    query
+  )}?limit=40&apikey=${import.meta.env.VITE_FMP_API_KEY}`
     );
     return data;
   } catch (error: any) {
