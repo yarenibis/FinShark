@@ -19,6 +19,7 @@ namespace Models
         //navigator
         public Stock? Stock { get; set; }
         public string AppUserId { get; set; }
+        //navigation
         public AppUser AppUser { get; set; }
     }
 }

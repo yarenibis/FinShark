@@ -1,6 +1,6 @@
 // api/search.ts
 import axios, { isAxiosError } from "axios";
-import type { CompanySearch } from "./company";
+import type { CompanyProfile, CompanySearch } from "./company";
 
 // Bu fonksiyon "CompanySearch[]" döndürsün ya da hata mesajı string döndürsün:
 export const searchCompanies = async (
@@ -23,3 +23,19 @@ export const searchCompanies = async (
     return "An unexpected error has occurred."; // string
   }
 };
+
+
+
+export const getCompanyProfile = async (query: string) => {
+  try {
+    const data = await axios.get<CompanyProfile[]>(
+      `https://financialmodelingprep.com/api/v3/profile/${encodeURIComponent(
+    query
+  )}?apikey=${import.meta.env.VITE_FMP_API_KEY}`
+    );
+    return data;
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+  }
+};
+

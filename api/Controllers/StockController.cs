@@ -30,7 +30,7 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) //required olarak belirlediğim alanları sağlıyor mu veri düzgün mü
                 return BadRequest(ModelState);
             var stocks = await _repository.GetAllAsync(queryObject);
             var stockDto = stocks.Select(s => s.ToStockDto()).ToList();

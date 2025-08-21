@@ -9,7 +9,7 @@ namespace api.Mappers
 {
     public static class StockMappers
     {
-        public static StockDto ToStockDto(this Stock stockModel)
+        public static StockDto ToStockDto(this Stock stockModel) //get işleminde
         {
             return new StockDto
             {
@@ -24,7 +24,7 @@ namespace api.Mappers
             };
         }
 
-        public static Stock ToStockFromCreateDto(this CreateStockRequest createStockRequest)
+        public static Stock ToStockFromCreateDto(this CreateStockRequest createStockRequest) //post işleminde 
         {
             return new Stock
             {
