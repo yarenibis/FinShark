@@ -1,6 +1,6 @@
 // api/search.ts
 import axios, { isAxiosError } from "axios";
-import type { CompanyKeyMetrics, CompanyProfile, CompanySearch } from "./company";
+import type { CompanyBalanceSheet, CompanyCashFlow, CompanyIncomeStatement, CompanyKeyMetrics, CompanyProfile, CompanySearch } from "./company";
 
 // Bu fonksiyon "CompanySearch[]" döndürsün ya da hata mesajı string döndürsün:
 export const searchCompanies = async (
@@ -52,4 +52,48 @@ export const getKeyMetrics = async (query: string) => {
     console.log("error message: ", error.message);
   }
 };
+
+
+export const getIncomeStatement = async (query: string) => {
+  try {
+    const data = await axios.get<CompanyIncomeStatement[]>(
+      `https://financialmodelingprep.com/api/v3/income-statement/${encodeURIComponent(
+    query
+  )}?limit=50&apikey=${import.meta.env.VITE_FMP_API_KEY}`
+    );
+    return data;
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+  }
+};
+
+
+
+export const getBalanceSheet = async (query: string) => {
+  try {
+    const data = await axios.get<CompanyBalanceSheet[]>(
+      `https://financialmodelingprep.com/api/v3/balance-sheet-statement/${encodeURIComponent(
+    query
+  )}?limit=20&apikey=${import.meta.env.VITE_FMP_API_KEY}`
+    );
+    return data;
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+  }
+};
+
+
+export const getCashFlow = async (query: string) => {
+  try {
+    const data = await axios.get<CompanyCashFlow[]>(
+      `https://financialmodelingprep.com/api/v3/cash-flow-statement/${encodeURIComponent(
+    query
+  )}?limit=100&apikey=${import.meta.env.VITE_FMP_API_KEY}`
+    );
+    return data;
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+  }
+};
+
 
