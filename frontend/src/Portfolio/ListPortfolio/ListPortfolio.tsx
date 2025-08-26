@@ -1,9 +1,10 @@
 import React, { type SyntheticEvent } from 'react'
 import CardPortfolio from '../CardPortfolio/CardPortfolio';
 import CardList from '../../Components/CardList/CardList';
+import type { PortfolioGet } from '../../Model/Portfolio';
 
 interface Props  {
-    portfolioValues: string[];
+    portfolioValues: PortfolioGet[];
     onPortfolioDelete: (e:SyntheticEvent)=>void;
 }
 

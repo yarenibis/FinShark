@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Stock;
+using api.Models;
 using Models;
 
 namespace api.Mappers
 {
     public static class StockMappers
     {
-        public static StockDto ToStockDto(this Stock stockModel) //get işleminde
+        public static StockDto ToStockDto(this Stock stockModel)
         {
             return new StockDto
             {
@@ -20,22 +21,23 @@ namespace api.Mappers
                 LastDiv = stockModel.LastDiv,
                 Industry = stockModel.Industry,
                 MarketCap = stockModel.MarketCap,
-                Comments = stockModel.Comments.Select(s => s.ToCommentDto()).ToList()
+                Comments = stockModel.Comments.Select(c => c.ToCommentDto()).ToList()
             };
         }
 
-        public static Stock ToStockFromCreateDto(this CreateStockRequest createStockRequest) //post işleminde 
+        public static Stock ToStockFromCreateDTO(this CreateStockRequest stockDto)
         {
             return new Stock
             {
-                Symbol = createStockRequest.Symbol,
-                CompanyName = createStockRequest.CompanyName,
-                Purchase = createStockRequest.Purchase,
-                LastDiv = createStockRequest.LastDiv,
-                Industry = createStockRequest.Industry,
-                MarketCap = createStockRequest.MarketCap
+                Symbol = stockDto.Symbol,
+                CompanyName = stockDto.CompanyName,
+                Purchase = stockDto.Purchase,
+                LastDiv = stockDto.LastDiv,
+                Industry = stockDto.Industry,
+                MarketCap = stockDto.MarketCap
             };
         }
+
         public static Stock ToStockFromFMP(this FMPStock fmpStock)
         {
             return new Stock
@@ -48,6 +50,5 @@ namespace api.Mappers
                 MarketCap = fmpStock.mktCap
             };
         }
-
     }
 }

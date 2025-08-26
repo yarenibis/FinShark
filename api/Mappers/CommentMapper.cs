@@ -10,38 +10,38 @@ namespace api.Mappers
 {
     public static class CommentMapper
     {
-        public static CommentDto ToCommentDto(this Comment comment)
+        public static CommentDto ToCommentDto(this Comment commentModel)
         {
             return new CommentDto
             {
-                Id = comment.Id,
-                Content = comment.Content,
-                Title = comment.Title,
-                CreatedOn = comment.CreatedOn,
-                CreatedBy=comment.AppUser.UserName,
-                StockId = comment.StockId
+                Id = commentModel.Id,
+                Title = commentModel.Title,
+                Content = commentModel.Content,
+                CreatedOn = commentModel.CreatedOn,
+                CreatedBy = commentModel.AppUser.UserName,
+                StockId = commentModel.StockId
             };
         }
-
 
         public static Comment ToCommentFromCreate(this CreateCommentDto commentDto, int stockId)
         {
             return new Comment
             {
-                Content = commentDto.Content,
                 Title = commentDto.Title,
+                Content = commentDto.Content,
                 StockId = stockId
             };
         }
 
-
-        public static Comment ToCommentFromUpdate(this UpdateCommentRequest commentDto)
+        public static Comment ToCommentFromUpdate(this UpdateCommentRequest commentDto, int stockId)
         {
             return new Comment
             {
+                Title = commentDto.Title,
                 Content = commentDto.Content,
-                Title = commentDto.Title
+                StockId = stockId
             };
         }
+
     }
 }

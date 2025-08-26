@@ -6,7 +6,6 @@ using api.Dtos.Stock;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,78 +13,77 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/stock")]
     [ApiController]
     public class StockController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly IStockRepository _repository;
-        public StockController(ApplicationDbContext applicationDbContext, IStockRepository stockRepository)
+        private readonly IStockRepository _stockRepo;
+        public StockController(ApplicationDbContext context, IStockRepository stockRepo)
         {
-            _repository = stockRepository;
-            _context = applicationDbContext;
+            _stockRepo = stockRepo;
+            _context = context;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
-            if (!ModelState.IsValid) //required olarak belirlediğim alanları sağlıyor mu veri düzgün mü
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var stocks = await _repository.GetAllAsync(queryObject);
+
+            var stocks = await _stockRepo.GetAllAsync(query);
+
             var stockDto = stocks.Select(s => s.ToStockDto()).ToList();
+
             return Ok(stockDto);
         }
-
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var stock = await _repository.GetByIdAsync(id);
+
+            var stock = await _stockRepo.GetByIdAsync(id);
+
             if (stock == null)
             {
                 return NotFound();
             }
+
             return Ok(stock.ToStockDto());
         }
 
-
-        [HttpGet("test")]
-        [Authorize]  // Auth testi için
-        public IActionResult TestAuth()
-        {
-            return Ok("Authorized!");
-        }
-
-
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateStockRequest createStockRequest)
+        public async Task<IActionResult> Create([FromBody] CreateStockRequest stockDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var stock = createStockRequest.ToStockFromCreateDto(); //Dto'yu alıp entity'e çevirir
-            await _repository.CreateAsync(stock);
-            return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto()); //keydedilen entity'i dto'ya çevirip istemciye yanıt döner
-        }
 
+            var stockModel = stockDto.ToStockFromCreateDTO();
+
+            await _stockRepo.CreateAsync(stockModel);
+
+            return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
+        }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequest updateStockRequest)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequest updateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var stock = await _repository.UpdateAsync(id, updateStockRequest);
-            if (stock == null)
+
+            var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
+
+            if (stockModel == null)
             {
                 return NotFound();
             }
 
-            return Ok(stock.ToStockDto());
+            return Ok(stockModel.ToStockDto());
         }
-
 
         [HttpDelete]
         [Route("{id:int}")]
@@ -93,12 +91,16 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var stock = await _repository.DeleteAsync(id);
-            if (stock == null)
+
+            var stockModel = await _stockRepo.DeleteAsync(id);
+
+            if (stockModel == null)
             {
                 return NotFound();
             }
+
             return NoContent();
         }
+
     }
 }
